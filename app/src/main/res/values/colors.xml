@@ -8,4 +8,5 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="FABase">#56A861</color>
+    <color name="green_lime">#C801D862</color>
 </resources>
