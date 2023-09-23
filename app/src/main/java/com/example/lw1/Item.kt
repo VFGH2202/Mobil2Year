@@ -16,4 +16,5 @@ data class Item (
     var data: String = "#",
     @ColumnInfo(name = "DateTime")
     var datetime: String
-        )
+        ) {
+}

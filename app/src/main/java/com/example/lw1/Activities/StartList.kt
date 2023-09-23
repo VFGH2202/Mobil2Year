@@ -1,15 +1,19 @@
-package com.example.lw1
+package com.example.lw1.Activities
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.lw1.List.ItemList
 import com.example.lw1.List.NoteAdapter
+import com.example.lw1.MainDb
+import com.example.lw1.R
 import com.example.lw1.databinding.ActivityStartListBinding
 
 
@@ -19,6 +23,7 @@ class StartList : AppCompatActivity(), NoteAdapter.Listener {
     private val adapter = NoteAdapter(this)
     //Dbase
     private lateinit var db: MainDb
+    private lateinit var type: String
 
 
     private var FABstatus = false
@@ -56,7 +61,6 @@ class StartList : AppCompatActivity(), NoteAdapter.Listener {
         binding = ActivityStartListBinding.inflate(layoutInflater)
         setContentView(binding.root)
         db = MainDb.getDb(this)
-        init()
 
         binding.FABase.bringToFront()
 
@@ -69,25 +73,31 @@ class StartList : AppCompatActivity(), NoteAdapter.Listener {
                 expandFab()
             }
         }
-        binding.FABmic.setOnClickListener {
-            Toast.makeText(this, "Fab1", Toast.LENGTH_SHORT).show()
+        binding.FABweb.setOnClickListener {
+            val intent = Intent(this, TextRedact::class.java)
+            intent.putExtra("tp", 2)
+            startActivity(intent)
         }
 
         binding.FABcam.setOnClickListener {
             Toast.makeText(this, "Fab2", Toast.LENGTH_SHORT).show()
         }
         binding.FABtxt.setOnClickListener {
-            //Toast.makeText(this, "Fab3", Toast.LENGTH_SHORT).show()
             val intent = Intent(this, TextRedact::class.java)
+            intent.putExtra("tp", 1)
             startActivity(intent)
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        init()
+    }
     private fun shrinkFab(){
         binding.FABase.startAnimation(RotAntiAddAnim)
 
-        binding.FABmic.startAnimation(Fab1HideAnim)
-        binding.FABmic.isClickable = false
+        binding.FABweb.startAnimation(Fab1HideAnim)
+        binding.FABweb.isClickable = false
 
         binding.FABcam.startAnimation(Fab2HideAnim)
         binding.FABcam.isClickable = false
@@ -101,8 +111,8 @@ class StartList : AppCompatActivity(), NoteAdapter.Listener {
     private fun expandFab(){
         binding.FABase.startAnimation(RotAddAnim)
 
-        binding.FABmic.startAnimation(Fab1ShowAnim)
-        binding.FABmic.isClickable = true
+        binding.FABweb.startAnimation(Fab1ShowAnim)
+        binding.FABweb.isClickable = true
 
 
         binding.FABcam.startAnimation(Fab2ShowAnim)
@@ -118,21 +128,22 @@ class StartList : AppCompatActivity(), NoteAdapter.Listener {
         binding.apply {
             rcView.layoutManager = LinearLayoutManager(this@StartList)
             rcView.adapter = adapter
-
             db.getDao().getAllItems().asLiveData().observe(this@StartList){
+                adapter.clearList()
                 it.forEach {
                     val head = it.head
                     val dt = it.datetime
                     val Id = it.id
-                    var tp: Int
+                    var img: Int
+                    val tp = it.type
                     when(it.type){
-                        "TXT"-> tp = R.drawable.baseline_text_snippet_24
-                        "IMG"-> tp = R.drawable.baseline_photo_camera_24
-                        "URL"-> tp = R.drawable.web_url
-                        else -> tp = R.drawable.fab_add_icon
+                        "TXT"-> img = R.drawable.baseline_text_snippet_24
+                        "IMG"-> img = R.drawable.baseline_photo_camera_24
+                        "URL"-> img = R.drawable.web_url
+                        else -> img = R.drawable.fab_add_icon
                     }
 
-                    val item = ItemList(head, dt, tp, Id)
+                    val item = ItemList(head, dt, tp, img, Id)
                     adapter.addNote(item)
                 }
             }
@@ -141,6 +152,38 @@ class StartList : AppCompatActivity(), NoteAdapter.Listener {
     }
 
     override fun onClick(note: ItemList) {
-        Toast.makeText(this, "${note.id}", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "${note.type}", Toast.LENGTH_SHORT).show()
+        if (note.type == "TXT"){
+            val intent = Intent(this, TextShow::class.java)
+            intent.putExtra("ID", note.id)
+            startActivity(intent)
+        }
+        else if (note.type == "URL"){
+            UrlDialod(note.id)
+        }
+    }
+    fun UrlDialod(id: Int?) {
+        var builder = AlertDialog.Builder(this)
+            .setTitle(R.string.URL_Dialog_ttl)
+            .setMessage(R.string.URL_Dialog_msg)
+            .setPositiveButton("Открыть в браузере") { _, _ ->
+                OpenURL(id)
+            }
+            .setNegativeButton("Просмотреть") { _, _ ->
+                val intent = Intent(this, TextShow::class.java)
+                intent.putExtra("ID", id)
+                startActivity(intent)
+            }
+            .create()
+        builder.show()
+    }
+
+    fun OpenURL(id: Int?){
+        Thread {
+            db.getDao().getById(id).apply {
+                val urlIntent = Intent(Intent.ACTION_VIEW, Uri.parse(this.data))
+                startActivity(urlIntent)
+            }
+        }.start()
     }
 }

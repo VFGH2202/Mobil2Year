@@ -16,7 +16,7 @@ class NoteAdapter(val listener: Listener): RecyclerView.Adapter<NoteAdapter.Note
         fun bind(itmlst: ItemList, listener: Listener) = with(binding){
             tvHD.text = itmlst.head
             tvDat.text = itmlst.datetime
-            IvType.setImageResource(itmlst.type)
+            IvType.setImageResource(itmlst.img)
             itemView.setOnClickListener{
                 listener.onClick(itmlst)
             }
@@ -38,6 +38,11 @@ class NoteAdapter(val listener: Listener): RecyclerView.Adapter<NoteAdapter.Note
 
     fun addNote(note: ItemList){
         NoteList.add(note)
+        notifyDataSetChanged()
+    }
+
+    fun clearList(){
+        NoteList.clear()
         notifyDataSetChanged()
     }
 

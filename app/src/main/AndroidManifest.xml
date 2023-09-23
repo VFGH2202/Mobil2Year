@@ -12,11 +12,14 @@
         android:theme="@style/Theme.LW1"
         tools:targetApi="31">
         <activity
-            android:name=".TextRedact"
-            android:exported="false"
-            android:parentActivityName=".StartList"/>
+            android:name=".Activities.TextShow"
+            android:exported="false" />
         <activity
-            android:name=".StartList"
+            android:name=".Activities.TextRedact"
+            android:exported="false"
+            android:parentActivityName=".Activities.StartList" />
+        <activity
+            android:name=".Activities.StartList"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
