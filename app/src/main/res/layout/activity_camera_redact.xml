@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+
+    <androidx.camera.view.PreviewView
+        android:id="@+id/pvCamera"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </androidx.camera.view.PreviewView>
+
+    <Button
+        android:id="@+id/btCam"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:text="@string/btCam"
+        android:backgroundTint="@color/FABase"
+        android:textColor="@color/black"
+        />
+
+</FrameLayout>

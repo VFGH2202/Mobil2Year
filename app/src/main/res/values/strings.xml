@@ -12,4 +12,6 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="URL_Dialog_ttl">Способ открытия</string>
     <string name="URL_Dialog_msg">Какое действие планируете произвести?</string>
+    <string name="btCam">Снимок</string>
+    <string name="etCam">HeadCam</string>
 </resources>

@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -23,7 +24,6 @@ class StartList : AppCompatActivity(), NoteAdapter.Listener {
     private val adapter = NoteAdapter(this)
     private lateinit var db: MainDb
     // Тип сохраняемых данных
-    private lateinit var type: String
 
 
     private var FABstatus = false
@@ -81,7 +81,7 @@ class StartList : AppCompatActivity(), NoteAdapter.Listener {
             startActivity(intent)
         }
         binding.FABcam.setOnClickListener {
-            Toast.makeText(this, "Fab2", Toast.LENGTH_SHORT).show()
+            cameraDialog()
         }
         binding.FABtxt.setOnClickListener {
             val intent = Intent(this, TextRedact::class.java)
@@ -168,7 +168,13 @@ class StartList : AppCompatActivity(), NoteAdapter.Listener {
         else if (note.type == "URL"){
             UrlDialod(note.id)
         }
+        else if (note.type == "IMG"){
+            val intent = Intent(this, ImageShow::class.java)
+            intent.putExtra("ID", note.id)
+            startActivity(intent)
+        }
     }
+
     fun UrlDialod(id: Int?) {
         var builder = AlertDialog.Builder(this)
             .setTitle(R.string.URL_Dialog_ttl)
@@ -192,5 +198,24 @@ class StartList : AppCompatActivity(), NoteAdapter.Listener {
                 startActivity(urlIntent)
             }
         }.start()
+    }
+
+    fun cameraDialog(){
+        val ed_txt = EditText(this)
+        var builder = AlertDialog.Builder(this)
+            .setTitle("Ввод заголовка")
+            .setMessage("Введите заголовок для фото")
+            .setView(ed_txt)
+            .setPositiveButton("Продолжить") { _, _ ->
+                Toast.makeText(this, ed_txt.text.toString(),
+                    Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, CameraRedact::class.java)
+                intent.putExtra("hd", ed_txt.text.toString())
+                startActivity(intent)
+            }
+            .setNeutralButton("Отмена") { _, _ ->
+            }
+            .create()
+        builder.show()
     }
 }
