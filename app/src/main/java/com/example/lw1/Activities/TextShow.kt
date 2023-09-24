@@ -25,6 +25,7 @@ class TextShow : AppCompatActivity() {
 
         db = MainDb.getDb(this)
         val id = intent.extras?.getInt("ID")
+        // По ID берутся данные из БД и по завершении выводятся на экран
         Thread {
             it = db.getDao().getById(id).apply {
                 binding.tvShowHd.setText(this.head)

@@ -17,6 +17,7 @@ class TextRedact : AppCompatActivity() {
 
         binding = ActivityTextRedactBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        // Установка типа файла в соответствии с переданным в intent
         when(intent.getIntExtra("tp", 0)){
             1->typ = "TXT"
             2->typ = "URL"
@@ -27,7 +28,7 @@ class TextRedact : AppCompatActivity() {
             val formatedDate = SimpleDateFormat("dd-MM-yyyy").format(Date())
             val formatedTime = SimpleDateFormat("HH:mm").format(Date())
             val DateTime = "$formatedDate $formatedTime"
-
+            // Создание элемента БД
             val item = Item(null,
                 binding.tvHead.text.toString(),
                 typ,

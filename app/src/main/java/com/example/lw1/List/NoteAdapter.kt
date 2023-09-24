@@ -11,7 +11,7 @@ import com.example.lw1.databinding.NoteItemBinding
 class NoteAdapter(val listener: Listener): RecyclerView.Adapter<NoteAdapter.NoteHolder>() {
     val NoteList = ArrayList<ItemList>()
     class NoteHolder(item: View): RecyclerView.ViewHolder(item) {
-
+        // Подключение разметки
         val binding = NoteItemBinding.bind(item)
         fun bind(itmlst: ItemList, listener: Listener) = with(binding){
             tvHD.text = itmlst.head
@@ -24,6 +24,7 @@ class NoteAdapter(val listener: Listener): RecyclerView.Adapter<NoteAdapter.Note
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteHolder {
+        // Создает NoteHolder с подключенной разметкой
         val view = LayoutInflater.from(parent.context).inflate(R.layout.note_item, parent, false)
         return NoteHolder(view)
     }
@@ -33,6 +34,7 @@ class NoteAdapter(val listener: Listener): RecyclerView.Adapter<NoteAdapter.Note
     }
 
     override fun onBindViewHolder(holder: NoteHolder, position: Int) {
+        // Запуск fun bind из NoteHolder с подключением listener
         holder.bind(NoteList[position], listener)
     }
 

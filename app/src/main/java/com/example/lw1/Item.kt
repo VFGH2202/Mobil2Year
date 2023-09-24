@@ -1,5 +1,5 @@
 package com.example.lw1
-
+// Элемент БД
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey

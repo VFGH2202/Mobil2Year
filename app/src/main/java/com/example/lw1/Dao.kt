@@ -15,8 +15,4 @@ interface Dao {
     fun getById(Usid: Int?): Item
     @Update
     fun updateIt(item: Item)
-
-
-//    @Query("Update FROM NoteItem WHERE id = :Usrid")
-//    fun updateById(Usrid: Int?)
 }

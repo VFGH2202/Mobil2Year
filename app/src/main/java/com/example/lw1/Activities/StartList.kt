@@ -21,14 +21,18 @@ class StartList : AppCompatActivity(), NoteAdapter.Listener {
 
     private lateinit var binding: ActivityStartListBinding
     private val adapter = NoteAdapter(this)
-    //Dbase
     private lateinit var db: MainDb
+    // Тип сохраняемых данных
     private lateinit var type: String
 
 
     private var FABstatus = false
 
-
+    // Импорт анимаций для Float Button
+    // Info ----------------------------
+    /* Делегат lazy принимает лямбда выражение (в скобках) для последующей
+    инициализации в формате
+    private val [Name]: [Type] by lazy { fun() }*/
     private val Fab1ShowAnim: Animation by lazy {
         AnimationUtils.loadAnimation(this, R.anim.fab1_show)
     }
@@ -60,11 +64,9 @@ class StartList : AppCompatActivity(), NoteAdapter.Listener {
 
         binding = ActivityStartListBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        // Получение базы данных и вывод главной FAB на передний план
         db = MainDb.getDb(this)
-
         binding.FABase.bringToFront()
-
-
 
         binding.FABase.setOnClickListener {
             if(FABstatus) {
@@ -78,7 +80,6 @@ class StartList : AppCompatActivity(), NoteAdapter.Listener {
             intent.putExtra("tp", 2)
             startActivity(intent)
         }
-
         binding.FABcam.setOnClickListener {
             Toast.makeText(this, "Fab2", Toast.LENGTH_SHORT).show()
         }
@@ -93,6 +94,7 @@ class StartList : AppCompatActivity(), NoteAdapter.Listener {
         super.onResume()
         init()
     }
+
     private fun shrinkFab(){
         binding.FABase.startAnimation(RotAntiAddAnim)
 
@@ -128,8 +130,12 @@ class StartList : AppCompatActivity(), NoteAdapter.Listener {
         binding.apply {
             rcView.layoutManager = LinearLayoutManager(this@StartList)
             rcView.adapter = adapter
-            db.getDao().getAllItems().asLiveData().observe(this@StartList){
+            // Получение всех элементов базы данных с применением Flow
+            // asLiveData собирает данные из Flow
+            db.getDao().getAllItems().asLiveData()
+                .observe(this@StartList){
                 adapter.clearList()
+                // Занесение данных в список
                 it.forEach {
                     val head = it.head
                     val dt = it.datetime
@@ -142,7 +148,6 @@ class StartList : AppCompatActivity(), NoteAdapter.Listener {
                         "URL"-> img = R.drawable.web_url
                         else -> img = R.drawable.fab_add_icon
                     }
-
                     val item = ItemList(head, dt, tp, img, Id)
                     adapter.addNote(item)
                 }
@@ -152,7 +157,9 @@ class StartList : AppCompatActivity(), NoteAdapter.Listener {
     }
 
     override fun onClick(note: ItemList) {
-        Toast.makeText(this, "${note.type}", Toast.LENGTH_SHORT).show()
+        // Нажатие на элемент списка и открытие в соответствии с типом элемента
+        Toast.makeText(this, "${note.type}",
+            Toast.LENGTH_SHORT).show()
         if (note.type == "TXT"){
             val intent = Intent(this, TextShow::class.java)
             intent.putExtra("ID", note.id)
