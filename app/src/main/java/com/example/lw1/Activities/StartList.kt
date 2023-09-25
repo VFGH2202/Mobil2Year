@@ -158,8 +158,6 @@ class StartList : AppCompatActivity(), NoteAdapter.Listener {
 
     override fun onClick(note: ItemList) {
         // Нажатие на элемент списка и открытие в соответствии с типом элемента
-        Toast.makeText(this, "${note.type}",
-            Toast.LENGTH_SHORT).show()
         if (note.type == "TXT"){
             val intent = Intent(this, TextShow::class.java)
             intent.putExtra("ID", note.id)
@@ -207,8 +205,6 @@ class StartList : AppCompatActivity(), NoteAdapter.Listener {
             .setMessage("Введите заголовок для фото")
             .setView(ed_txt)
             .setPositiveButton("Продолжить") { _, _ ->
-                Toast.makeText(this, ed_txt.text.toString(),
-                    Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, CameraRedact::class.java)
                 intent.putExtra("hd", ed_txt.text.toString())
                 startActivity(intent)

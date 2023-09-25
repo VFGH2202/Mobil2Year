@@ -35,6 +35,7 @@ import java.util.concurrent.Executors
     private var imageCapture: ImageCapture? = null
 
     private fun getOutputDir(): File{
+        // Создается директория в Android/media/[Name App]
         val mediaDir = externalMediaDirs.firstOrNull()?.absoluteFile.let {
             File(it, resources.getString(R.string.app_name)).apply {
                 mkdir()
@@ -119,7 +120,7 @@ import java.util.concurrent.Executors
                     }
 
                 val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-
+                // Объект для захвата данных с камеры
                 imageCapture = ImageCapture
                     .Builder()
                     .build()
@@ -141,14 +142,15 @@ import java.util.concurrent.Executors
     }
 
     private fun takePhoto() {
+        // Работа с записью в БД
         val db = MainDb.getDb(this)
         val head = intent.getStringExtra("hd").toString()
         val formatedDate = SimpleDateFormat("dd-MM-yyyy").format(Date())
         val formatedTime = SimpleDateFormat("HH:mm").format(Date())
         val DateTime = "$formatedDate $formatedTime"
-
+        // Проверка инициализации объекта для считывания
         val imageCapture = imageCapture?:return
-
+        // Имя файла из даты
         val photoFile = File(outputDir,
         SimpleDateFormat(FILE_FORMAT, Locale.US)
             .format(System.currentTimeMillis()) + ".jpg")
@@ -159,6 +161,7 @@ import java.util.concurrent.Executors
         imageCapture.takePicture(
             outputOption,
             ContextCompat.getMainExecutor(this),
+            // Обработка ответа при сохранении
             object : ImageCapture.OnImageSavedCallback {
                 override fun onImageSaved(outputFileResults:
                                           ImageCapture.OutputFileResults) {
